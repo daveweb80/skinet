@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using API.Helpers;
 using Core.Interfaces;
 using Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -19,7 +20,9 @@ namespace API
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddScoped<IproductRepository, ProductRepository>();
+            services.AddScoped(typeof(IGenericRepository<>), (typeof(GenericRepository<>)));
             services.AddControllers();
+            services.AddAutoMapper(typeof(MappingProfiles));
             services.AddDbContext<StoreContext>(x => x.UseSqlite(_config.GetConnectionString("DefaultConnection")));
             services.AddSwaggerGen(c =>
             {
@@ -40,6 +43,8 @@ namespace API
             app.UseHttpsRedirection();
 
             app.UseRouting();
+            //app.UseHttpsRedirection();
+            app.UseStaticFiles();
 
             app.UseAuthorization();
 
